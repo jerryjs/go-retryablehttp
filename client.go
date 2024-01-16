@@ -514,6 +514,11 @@ func baseRetryPolicy(resp *http.Response, err error) (bool, error) {
 		return true, nil
 	}
 
+	// Other 4xx that NVD gives so retry
+	if resp.StatusCode == http.StatusUnauthorized || resp.StatusCode == http.StatusForbidden {
+		return true, nil
+	}
+
 	// Check the response code. We retry on 500-range responses to allow
 	// the server time to recover, as 500's are typically not permanent
 	// errors and may relate to outages on the server side. This will catch
